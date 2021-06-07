@@ -396,7 +396,7 @@ public class FirebasePlugin extends CordovaPlugin {
           String installerPackageName = context.getPackageManager().getInstallerPackageName(context.getPackageName());
           callbackContext.success(installerPackageName);
         } catch (Exception e) {
-          Crashlytics.logException(e);
+          firebaseCrashlytics.recordException(e);
           callbackContext.error(e.getMessage());
         }
       }
