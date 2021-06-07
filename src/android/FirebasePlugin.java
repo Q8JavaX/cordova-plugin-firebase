@@ -117,6 +117,9 @@ public class FirebasePlugin extends CordovaPlugin {
     } else if (action.equals("hasPermission")) {
       this.hasPermission(callbackContext);
       return true;
+    } else if (action.equals("getInstallerPackageName")) {
+      this.getInstallerPackageName(callbackContext);
+      return true;
     } else if (action.equals("setBadgeNumber")) {
       this.setBadgeNumber(callbackContext, args.getInt(0));
       return true;
@@ -378,6 +381,22 @@ public class FirebasePlugin extends CordovaPlugin {
           Log.d(TAG, "hasPermission success. areEnabled: " + (areNotificationsEnabled ? "true" : "false"));
         } catch (Exception e) {
           firebaseCrashlytics.recordException(e);
+          callbackContext.error(e.getMessage());
+        }
+      }
+    });
+  }
+  
+  private void getInstallerPackageName(final CallbackContext callbackContext) {
+    //Log.d(TAG, "getToken called");
+    cordova.getThreadPool().execute(new Runnable() {
+      public void run() {
+        try {
+          Context context = cordova.getActivity();
+          String installerPackageName = context.getPackageManager().getInstallerPackageName(context.getPackageName());
+          callbackContext.success(installerPackageName);
+        } catch (Exception e) {
+          Crashlytics.logException(e);
           callbackContext.error(e.getMessage());
         }
       }
